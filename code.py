@@ -3,24 +3,32 @@ from adafruit_circuitplayground import cp
 from lightdisplay import LightDisplay
 from sensorlightdisplay import SensorLightDisplay
 
-# Initialize instances with 10% brightness
+def clear_lights(delay=1):
+    cp.pixels.fill([0, 0, 0])
+    cp.pixels.show()
+    time.sleep(delay)
+
 light_display = LightDisplay(brightness=0.1)
 sensor_display = SensorLightDisplay(brightness=0.1)
 
 while True:
-    # Test half-pattern method (red)
     light_display.half_pattern([255, 0, 0])
-
-    # Test snake effect: snake of size 3 in yellow, with 0.2 seconds between movements
+    clear_lights()
+    
     light_display.snake(3, [255, 255, 0], 0.2)
-
-    # Test light method: side 0 (green)
+    clear_lights()
+    
     light_display.light(0, [0, 255, 0])
+    time.sleep(0.5)
+    clear_lights()
+    
+    light_display.random_light([0, 0, 255], 0.5)
+    clear_lights()
+    
+    sensor_display.light(cp.acceleration[:2], [255, 255, 255])
+    clear_lights()
+    
+    sensor_display.control_feedback_y(cp.acceleration[1])
+    clear_lights()
 
-    # RANDOM METHOD TO BE IMPLEMENTED
-
-    # Uncomment below to test sensor methods.
-    # sensor_display.light(cp.acceleration[:2])
-    # sensor_display.control_feedback_y(cp.acceleration[1])
-
-    time.sleep(0.1)
+    time.sleep(0.5)
