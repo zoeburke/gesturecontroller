@@ -1,6 +1,5 @@
 from adafruit_circuitplayground import cp
 
-
 class SensorLightDisplay:
     BLACK = [0, 0, 0]
     NUM_PIXELS = len(cp.pixels)
@@ -9,28 +8,29 @@ class SensorLightDisplay:
         cp.pixels.brightness = brightness
         cp.pixels.auto_write = False
 
-    def light(self, acceleration):
-
+    def light(self, acceleration, colour):
         x, y = acceleration
         cp.pixels.fill(self.BLACK)
-        if x < -3:
-            cp.pixels.fill([0, 255, 0])  # Green for left tilt
-        elif x > 3:
-            cp.pixels.fill([255, 0, 0])  # Red for right tilt
-        elif y < -3:
-            cp.pixels.fill([255, 0, 255])  # Magenta for backward tilt
-        elif y > 3:
-            cp.pixels.fill([0, 255, 255])  # Cyan for forward tilt
+        if x < -3 and x < y:
+            for i in range(6, 9):
+                cp.pixels[i] = colour
+        elif x > 3 and x > y:
+            for i in range(1, 4):
+                cp.pixels[i] = colour
+        elif y > 3 and y > x:
+            for i in range(4, 6):
+                cp.pixels[i] = colour
+        elif y < -3 and y < x:
+            for i in [0, 9]:
+                cp.pixels[i] = colour
         cp.pixels.show()
 
     def control_feedback_y(self, acceleration_y):
-
-        # Calculate intensity as a percentage of maximum tilt (9.81)
+        if acceleration_y < -9.81 or acceleration_y > 9.81:
+            return
         intensity = int((abs(acceleration_y) / 9.81) * 255)
-        # Ensure the value doesn't exceed 255
         if intensity > 255:
             intensity = 255
-        # Use blue color with the computed intensity: [R, G, B]
         color = [0, 0, intensity]
         cp.pixels.fill(color)
         cp.pixels.show()
